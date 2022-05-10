@@ -415,8 +415,12 @@ class UserNxMgAssembler(NxMgAssembler):
             go_dag = self.get_go_dag()
             for node in self.graph.nodes:
                 if node.startswith('GO:'):
-                    go_term = go_dag.get(node)
-                    if go_term:
+                   go_term = go_dag.get(node)
+                   if go_term:
                         self.graph.nodes[node]['GO'] = go_term.id
                         self.graph.nodes[node]['name'] = go_term.name
                         self.graph.nodes[node]['domain'] = go_term.namespace
+                   else:
+                        self.graph.nodes[node]['GO'] = node
+                        self.graph.nodes[node]['name'] = node
+                        self.graph.nodes[node]['domain'] = node
