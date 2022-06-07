@@ -68,20 +68,27 @@ def map_hgnc_symbols(hgnc_symbols, gene_mapper):
     for hgnc_symbol in hgnc_symbols:
         ref = {'HGNC_SYMBOL': hgnc_symbol, 'HGNC': None, 'UP': None}
         hgnc_id = gene_mapper.get_current_hgnc_id(hgnc_symbol)
-        if not hgnc_id:
-            logger.warning('Could not get HGNC ID for symbol %s' % hgnc_symbol)
-            continue
-        elif isinstance(hgnc_id, list):
+        # do not filter out genes without HGNC symbol/id
+        #if not hgnc_id:
+        #    logger.warning('Could not get HGNC ID for symbol %s' % hgnc_symbol)
+        #    continue
+        if isinstance(hgnc_id, list):
             logger.warning('More than one current HGNC ID for outdated '
                            'symbol %s' % hgnc_symbol)
             continue
-        ref['HGNC'] = hgnc_id
+        if not hgnc_id:
+            ref['HGNC'] = hgnc_symbol
+        else:
+            ref['HGNC'] = hgnc_id
         uniprot_id = gene_mapper.get_uniprot_id(hgnc_id)
+        #if not uniprot_id:
+        #    logger.warning('Could not get UniProt ID for symbol %s' %
+        #                   hgnc_symbol)
+        #    continue
         if not uniprot_id:
-            logger.warning('Could not get UniProt ID for symbol %s' %
-                           hgnc_symbol)
-            continue
-        ref['UP'] = uniprot_id
+            ref['UP'] = hgnc_symbol
+        else:
+            ref['UP'] = uniprot_id
         refs.append(ref)
     return refs
 
